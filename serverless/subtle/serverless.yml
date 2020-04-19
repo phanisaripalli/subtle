@@ -1,0 +1,31 @@
+service: subtle
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'eu-central-1'}
+  profile: ${opt:profile}
+  environment:
+    S3_BUCKET: subtle-storage-${opt:stage, self:provider.stage}
+
+resources:
+  Resources:
+    SubtitlesBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: SubtleJobs-${opt:stage, self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
