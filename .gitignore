@@ -1,5 +1,8 @@
 .idea/
 
+data/
+
+config.yml
 serverless/node_modules/
 serverless/node_modules/*
 serverless/serverless.env.yml
